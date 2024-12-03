@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
 )
 
@@ -15,4 +17,12 @@ func main() {
 	}
 	fmt.Println("Hello World")
 	fmt.Println(portString)
+	router := chi.NewRouter()
+
+	srv := &http.Server{
+		Addr:    ":" + portString,
+		Handler: router,
+	}
+	log.Printf("Server starting on %v", srv.Addr)
+	srv.ListenAndServe()
 }

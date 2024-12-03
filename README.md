@@ -15,6 +15,6 @@
 #### install http module
 - go mod tidy
 - go mod vendor
-- go get  github.com/go-chi/chi
+- go get -u github.com/go-chi/chi/v5
 - go get  github.com/go-chi/cors
 
