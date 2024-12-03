@@ -12,4 +12,9 @@
 - go mod vendor
 #### clean mod file 
 - go mod tidy
-#### 
+#### install http module
+- go mod tidy
+- go mod vendor
+- go get  github.com/go-chi/chi
+- go get  github.com/go-chi/cors
+
