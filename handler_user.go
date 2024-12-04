@@ -9,7 +9,7 @@ import (
 	"github.com/newmohib/goLang-app-rss-feed-scraper/internal/database"
 )
 
-func (apiCfg *apiConfig)handlerCreateUser(w http.ResponseWriter, r *http.Request) {
+func (apiCfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request) {
 	type createUserRequest struct {
 		Name string `json:"name"`
 	}
@@ -23,7 +23,7 @@ func (apiCfg *apiConfig)handlerCreateUser(w http.ResponseWriter, r *http.Request
 	}
 
 	user, err := apiCfg.DB.CreateUser(r.Context(), database.CreateUserParams{
-		ID: uuid.New(),
+		ID:   uuid.New(),
 		Name: params.Name,
 		// CreatedAt: time.UTC(),
 		// UpdatedAt: time.UTC(),
@@ -34,7 +34,6 @@ func (apiCfg *apiConfig)handlerCreateUser(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	responsdWithJSON(w, http.StatusOK, databaseUserToUser(user))
 
-	responsdWithJSON(w, http.StatusOK, user)
-	
 }
