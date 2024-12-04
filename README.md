@@ -14,7 +14,8 @@
 - go mod tidy
 ### run query
 - sqlc generate
-
+#### migration
+- goose postgres postgres://postgres:postgres@localhost:5432/go-rssagg-app up
 #### install http module
 - go mod tidy
 - go mod vendor
@@ -26,5 +27,6 @@
     - go install github.com/pressly/goose/v3/cmd/goose@latest
 - add posgres driver
     - go get github.com/lib/pq
+
 
 
