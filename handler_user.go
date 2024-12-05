@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
+	// "github.com/newmohib/goLang-app-rss-feed-scraper/internal/auth"
 	"github.com/newmohib/goLang-app-rss-feed-scraper/internal/database"
 )
 
@@ -36,4 +37,24 @@ func (apiCfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Reques
 
 	responsdWithJSON(w, http.StatusOK, databaseUserToUser(user))
 
+}
+
+// GET User Handler by apikey
+
+func (apiCfg *apiConfig) handlerGetUser(w http.ResponseWriter, r *http.Request, user database.User) {
+	// //check authentication header
+	// apiKey, err := auth.GetAPIKey(r.Header)
+	// if err != nil {
+	// 	respondWithError(w, http.StatusUnauthorized, err.Error())
+	// 	return
+	// }
+	// //get user
+	// user, err := apiCfg.DB.GetUserByAPIKey(r.Context(), apiKey)
+	
+	// if err != nil {
+	// 	respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Error getting user: %v", err))
+	// 	return
+	// }
+	responsdWithJSON(w, http.StatusOK, databaseUserToUser(user))
+	
 }
