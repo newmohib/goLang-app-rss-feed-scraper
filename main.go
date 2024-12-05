@@ -39,7 +39,7 @@ func main() {
 	//defer conn.Close()
 
 	fmt.Println("Successfully connected to the database!")
-	
+
 	apiCfg := apiConfig{
 		DB: database.New(conn),
 	}
