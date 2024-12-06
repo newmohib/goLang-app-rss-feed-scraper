@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"log"
+	"strings"
 	"sync"
 	"time"
 
@@ -77,19 +78,12 @@ func scrapeFeed(db *database.Queries, wg *sync.WaitGroup, feed database.Feed) {
 			FeedID:      feed.ID,
 		})
 
-		// _, err := db.CreateItem(context.Background(), database.CreateItemParams{
-		// 	ID:        uuid.New(),
-		// 	CreatedAt: time.Now().UTC(),
-		// 	UpdatedAt: time.Now().UTC(),
-		// 	Title:     item.Title,
-		// 	Link:      item.Link,
-		// 	FeedID:    feed.ID,
-		// })
-
-		// if err != nil {
-		// 	log.Println("error creating item: ",err)
-		// 	return
-		// }
+		if err != nil {
+			if strings.Contains(err.Error(), "duplicate key") {
+				continue
+			}
+			log.Println("error creating post: ", err)
+		}
 	}
 	log.Println("Feed collected, posts found", feed.Name, len(rssFeed.Channel.Item))
 }
