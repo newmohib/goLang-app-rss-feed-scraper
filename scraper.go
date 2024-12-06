@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"log"
 	"sync"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/newmohib/goLang-app-rss-feed-scraper/internal/database"
 )
 
@@ -49,7 +51,31 @@ func scrapeFeed(db *database.Queries, wg *sync.WaitGroup, feed database.Feed) {
 	}
 
 	for _, item := range rssFeed.Channel.Item {
-		log.Println("Found Post:\n", "Titel : ", item.Title, "\n Name : ", feed.Name)
+		// log.Println("Found Post:\n", "Titel : ", item.Title, "\n Name : ", feed.Name)
+
+		description := sql.NullString{}
+		if item.Description != "" {
+			description.String = item.Description
+			description.Valid = true
+		}
+		// publish time is in RFC822 format
+		pubAt, err := time.Parse(time.RFC1123Z, item.PubDate)
+
+		if err != nil {
+			log.Printf("error parsing date: %v with err %v ", item.PubDate, err)
+			continue
+		}
+
+		_, err = db.CreatePosts(context.Background(), database.CreatePostsParams{
+			ID:          uuid.New(),
+			CreatedAt:   time.Now().UTC(),
+			UpdatedAt:   time.Now().UTC(),
+			Title:       item.Title,
+			Description: description,
+			PublishedAt: pubAt,
+			Url:         item.Link,
+			FeedID:      feed.ID,
+		})
 
 		// _, err := db.CreateItem(context.Background(), database.CreateItemParams{
 		// 	ID:        uuid.New(),
@@ -65,5 +91,5 @@ func scrapeFeed(db *database.Queries, wg *sync.WaitGroup, feed database.Feed) {
 		// 	return
 		// }
 	}
-	log.Println("Feed %s collected, %v posts found", feed.Name, len(rssFeed.Channel.Item))
+	log.Println("Feed collected, posts found", feed.Name, len(rssFeed.Channel.Item))
 }
