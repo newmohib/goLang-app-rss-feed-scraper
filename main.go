@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
@@ -18,6 +19,15 @@ type apiConfig struct {
 }
 
 func main() {
+	// test feed list https://www.theguardian.com/world/rss
+	// feed, err := urlToFeed("https://www.wagslane.dev/index.xml")
+
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// fmt.Println(feed)
+
+	//
 	myEnv, err := godotenv.Read()
 	portString := myEnv["PROT"]
 	if err != nil {
@@ -39,10 +49,15 @@ func main() {
 	//defer conn.Close()
 
 	fmt.Println("Successfully connected to the database!")
-
+	db := database.New(conn)
 	apiCfg := apiConfig{
-		DB: database.New(conn),
+		DB: db,
 	}
+
+	// strart go routine for feed scraper
+	// wg := &sync.WaitGroup{}
+	// wg.Add(1)
+	go startScraping(db, 10, time.Minute)
 
 	// added Server listening port
 	fmt.Println(portString)
