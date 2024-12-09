@@ -50,11 +50,24 @@ func (apiCfg *apiConfig) handlerGetUser(w http.ResponseWriter, r *http.Request, 
 	// }
 	// //get user
 	// user, err := apiCfg.DB.GetUserByAPIKey(r.Context(), apiKey)
-	
+
 	// if err != nil {
 	// 	respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Error getting user: %v", err))
 	// 	return
 	// }
 	responsdWithJSON(w, http.StatusOK, databaseUserToUser(user))
-	
+
+}
+func (apiCfg *apiConfig) handlerGetPostsForUser(w http.ResponseWriter, r *http.Request, user database.User) {
+	posts, err := apiCfg.DB.GetPostsForUser(r.Context(), database.GetPostsForUserParams{
+		UserID: user.ID,
+		Limit:  500,
+	})
+
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Could not get posts: %v", err))
+		return
+	}
+	responsdWithJSON(w, http.StatusOK, databasePostsToPosts(posts))
+
 }
